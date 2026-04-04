@@ -1,6 +1,7 @@
 import os
-
+from google.genai import types
 from config import CHARACTER_LIMIT
+
 
 def get_file_content(working_directory, file_path):
     try:
@@ -18,3 +19,25 @@ def get_file_content(working_directory, file_path):
             return contents
     except Exception as e:
         return f'Error: {e}'
+
+schema_get_file_content = types.FunctionDeclaration(
+    name='get_file_content',
+    description='Reads and returns the content of a file within the permitted working directory. Content may be truncated if it exceeds the character limit.',
+    parameters=types.Schema(
+        type=types.Type.OBJECT,
+        required=[
+            'working_directory',
+            'file_path',
+        ],
+        properties={
+            'working_directory': types.Schema(
+                type=types.Type.STRING,
+                description='The absolute base directory path for security validation.',
+            ),
+            'file_path': types.Schema(
+                type=types.Type.STRING,
+                description='Path to the file'
+            )
+        }
+    ),
+)

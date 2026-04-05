@@ -3,6 +3,8 @@ import argparse
 from google.genai import types
 from dotenv import load_dotenv
 from google import genai
+
+from functions.call_function import call_function
 from prompts import system_prompt
 
 from functions.get_files_info import schema_get_files_info
@@ -48,6 +50,14 @@ if args.verbose:
 
 if response.function_calls is not None:
     for function_call in response.function_calls:
-        print(f"Calling function: {function_call.name}({function_call.args})")
+        function_call_result = call_function(function_call, args.verbose)
+        if len(function_call_result.parts) == 0:
+            raise Exception("Error: function call result parts are empty.")
+        if function_call_result.parts[0].function_response is None:
+            raise Exception("Error: there is no function response in the first part of function call result.")
+        if function_call_result.parts[0].function_response.response is None:
+            raise Exception("Error: the response of the function response in the function call result is empty.")
+        if args.verbose:
+            print(f"-> {function_call_result.parts[0].function_response.response}")
 else:
     print(response.text)

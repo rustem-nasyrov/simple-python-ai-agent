@@ -11,7 +11,7 @@ def get_files_info(working_directory, directory="."):
         if not os.path.isdir(target_dir):
             return f'Error: "{directory}" is not a directory'
         dir_contents = os.listdir(target_dir)
-        result = [f"Result for {"current" if directory == "." else directory} directory:"]
+        result = [f"Result for {'current' if directory == '.' else directory} directory:"]
         for content in dir_contents:
             if content.startswith("__"):
                 continue
